@@ -54,6 +54,19 @@ main()
     console.log("sample was saved");
 }); */
 
+// validations for schema using middle wares
+const validateListing=(req,res,next)=>{
+    let {error}=listingSchema.validate(req.body);
+    if(error){
+        let errMsg=error.details.map((e1)=>e1.message).join(',');
+        throw new ExpressError(400,errMsg);
+    }
+    else{
+        next();
+    }
+}
+
+
 app.get("/listings",wrapAsync(async(req,res)=>{
     const allListings=await Listing.find({});
     res.render("listings/index.ejs",{allListings});
@@ -74,7 +87,10 @@ app.get("/listings/:id",wrapAsync(async(req,res)=>{
 
 //Create Route
 
-app.post("/listings",wrapAsync(async(req,res,next)=>{                           //CUSTOM ERROR HANDLING USING WRAPASYNC MEHTOD
+app.post(
+    "/listings",
+    validateListing,                                      // validating using middlewares
+    wrapAsync(async(req,res,next)=>{                           //CUSTOM ERROR HANDLING USING WRAPASYNC MEHTOD
     // let {title,description,image,price,location,country}=req.body;
 /*    console.log(title);
     console.log(price);
@@ -98,13 +114,15 @@ app.post("/listings",wrapAsync(async(req,res,next)=>{                           
             throw new ExpressError(400,'title is missing');
         }*/
 
-        // below is schema validation using joi for npm
-
-        let result=listingSchema.validate(req.body);
+        // below is schema validation using joi for npm normally
+        /*let result=listingSchema.validate(req.body);
         // console.log(result);
         if(result.error){
             throw new ExpressError(400,result.error);
-        }
+        }*/
+
+
+
         const newListing=new Listing(req.body.listing);
         await newListing.save();
         res.redirect("/listings");
@@ -118,10 +136,13 @@ app.get("/listings/:id/edit",wrapAsync(async(req,res)=>{
 }));
 
 //Update route with put request using method override package
-app.put("/listings/:id",wrapAsync(async(req,res)=>{
-    if(!req.body.listing){
-        throw new ExpressError(400,'bad request and send valid data for listing');
-    }
+app.put(
+    "/listings/:id",
+    validateListing,                                            // validating using middlewares
+    wrapAsync(async(req,res)=>{
+    // if(!req.body.listing){
+    //     throw new ExpressError(400,'bad request and send valid data for listing');
+    // }
 
     let {id}=req.params;
     console.log(req.body.listing);
