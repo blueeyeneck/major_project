@@ -1,0 +1,50 @@
+major project:-
+
+phase-1(part A):- AIR BNB REPLICA
+LISTING
+
+*.Database Set Up
+*.REST Apis for CRUD Operations
+
+1. LISTING :- Place(apartment,flat,home,villa,hotel)
+  =>title(string type),
+    description(string type),
+    image(url or link)(string type),
+    price(number type),
+    location(string type),
+    country(string type)
+
+2. INITIALING DATABASES
+
+3. CRUD OPERATIONS ON DATA
+  a. get=>/listings=>all listings
+  b. get=>/listings/:id (show)=> specifin listing data(view)
+  c. Read: Show route
+     get=>/listings/:id=>all data of that id
+  d. Create=> New & Create route
+     get=>/listings/new->form->submit=>post=>/listing
+  e. Update: Edit & Update route
+     edit:-
+          get=>/listings/:id/edit=>edit form=>submit
+          put=>/listings/:id
+  f. Delete:-
+          delete=>/listing/:id
+
+Phase-1(Part B):-
+in this we use a new package called EJS Mate for adding styling
+for instaling:-npm i ejs-mate
+ejs-Mate is used for creating various templates or layouts
+
+Creating NavBar:-
+we use bootstrap for prebuild navbar
+
+Footer:-
+
+Styling index:-
+
+Styling new List:- using bootstrap
+
+styling edit page:-
+
+styling show page:-
+
