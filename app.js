@@ -9,6 +9,8 @@ const methodOverride=require('method-override');
 const ejsMate=require('ejs-Mate');
 const wrapAsync=require('./utlis/wrapAsync.js');
 const ExpressError=require('./utlis/ExpressError.js');
+const listingSchema=require('./schema.js');
+
 
 
 app.set("view engine","ejs");
@@ -80,8 +82,28 @@ app.post("/listings",wrapAsync(async(req,res,next)=>{                           
     console.log(country);*/
     // let listing=req.body.listing;
     // console.log(listing);
-        if(!req.body.listing){
+
+
+        /*if(!req.body.listing){
             throw new ExpressError(400,'bad request and send valid data for listing');
+        }
+        const newListing=new Listing(req.body.listing);
+        if(!newListing.description){
+            throw new ExpressError(400,'description is missing');
+        }
+        if(!newListing.location){
+            throw new ExpressError(400,'locatoin is missing');
+        }
+        if(!newListing.title){
+            throw new ExpressError(400,'title is missing');
+        }*/
+
+        // below is schema validation using joi for npm
+
+        let result=listingSchema.validate(req.body);
+        // console.log(result);
+        if(result.error){
+            throw new ExpressError(400,result.error);
         }
         const newListing=new Listing(req.body.listing);
         await newListing.save();
