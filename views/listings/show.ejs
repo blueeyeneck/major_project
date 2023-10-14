@@ -5,7 +5,7 @@
         <h3><%=listing.title%></h3>
     </div>
 
-    <div class="card col-6 offset-3 show-card">
+    <div class="card col-6 offset-3 show-card card-listing">
         <img src="<%= listing.image %>" class="card-img-top show-img" alt="listing_img">
         <div class="card-body">
             <p class="card-text">
@@ -28,22 +28,43 @@
     <div class="col-8 offset-3 mb-3">
         <hr>
         <h4>Leave a Review</h4>
-        <form>
+        <form method="post" action="/listings/<%=listing.id%>/reviews" novalidate class="needs-validation">
             <div class="mb-3 mt-3">
                 <label for="rating" class="form-label">Rating</label>
-                <input type="range" min="1" max="5" id="rating" name="reviewrating" class="form-range">
+                <input type="range" min="1" max="5" id="rating" name="review[rating]" class="form-range">
             </div>
             <div class="mb-3 mt-3">
                 <label for="comment" class="form-label">Comment</label>
                 <textarea 
-                    name="reviewComment" 
                     id="comment"
                     cols="30"
                     rows="5"
                     class="form-control"
+                    name="review[comment]"
+                    required
                 ></textarea>
+                <div class="invalid-feedback">please enter a comment</div>
             </div>
             <button class="btn btn-outline-dark">submit</button>
         </form>
+
+        <hr>
+
+        <h4>All reviews</h4>
+
+        <div class="row">
+            <% for(i of listing.reviews){ %>  
+                <div class="card col-5 ms-3 mb-3" >
+                    <div class="card-body">
+                        <h5 class="card-title">mahindra</h5>
+                        <p class="card-text"><%=i.comment%></p>
+                        <p class="card-text"><%=i.rating%> Stars!</p>
+                    </div>
+                    <form class="mb-3" method="post" action="/listings/<%=listing._id%>/reviews/<%=i._id%>?_method=DELETE">
+                        <button class="btn btn-sm btn-dark">delete</button>
+                    </form>
+                </div>
+            <% } %>
+        </div>
     </div>
 </div>
