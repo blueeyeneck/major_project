@@ -53,3 +53,8 @@ styling show page:-
 deleting reviews:-
 
 deleting lisings:-
+
+major project phase-2(part-B)
+restructing listings by using express router
+restructing reviews by using express router
+

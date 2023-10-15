@@ -1,19 +1,16 @@
-const express=require('express');
-const app=express();
-const mongoose=require('mongoose');
-const port=8080;
-const mongo_url="mongodb://127.0.0.1:27017/wanderlust";
-const Listing=require("./models/listing.js");
-const path=require("path");
-const methodOverride=require('method-override');
-const ejsMate=require('ejs-Mate');
-const wrapAsync=require('./utlis/wrapAsync.js');
-const ExpressError=require('./utlis/ExpressError.js');
-const {listingSchema,reviewSchema}=require('./schema.js');
-const review=require("./models/reviews.js");
-const { wrap } = require('module');
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const port = 8080;
+const mongo_url = "mongodb://127.0.0.1:27017/wanderlust";
+const path = require("path");
+const methodOverride = require('method-override');
+const ejsMate = require('ejs-Mate');
+const ExpressError = require('./utlis/ExpressError.js');
 
 
+const listings = require("./routes/listing.js");
+const reviews = require("./routes/reviews.js");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -43,44 +40,35 @@ main()
         console.log(`error occured:-${err}`);
     });
 
-/* app.get("/testListing",async (req,res)=>{
-    let sampleListing=new Listing({
-        title:"My new Villa",
-        description:"By the beach",
-        price:12200,
-        location:"bangalore,karnataka",
-        country:"India"
-    });
-    await sampleListing.save();
-    res.send("success");
-    console.log("sample was saved");
-}); */
 
-// validations for schema using middle wares
-const validateListing=(req,res,next)=>{
-    let {error}=listingSchema.validate(req.body);
-    if(error){
-        let errMsg=error.details.map((e1)=>e1.message).join(',');
-        throw new ExpressError(400,errMsg);
-    }
-    else{
-        next();
-    }
-}
-
-const validatereview=(req,res,next)=>{
-    let {error}=reviewSchema.validate(req.body);
-    console.log("in review validation");
-    if(error){
-        let errMsg=error.details.map((e1)=>e1.message).join(',');
-        throw new ExpressError(420,errMsg);
-    }
-    else{
-        next();
-    }
-}
+app.use("/listings",listings);
+app.use("/listings/:id/reviews",reviews);
 
 
+// Custom Error Handling
+app.all('*',(req,res,next)=>{
+    next(new ExpressError(420,'page not found'));
+})
+
+app.use((err,req,res,next)=>{
+    let {statusCode=500,message='somethis went wrong'}=err;
+    res.status(statusCode).render('error.ejs',{err});
+    // res.status(statusCode).send(message);
+    // res.send('something went wrong!');
+})
+
+
+
+/*
+const { listingSchema, reviewSchema} = require('./schema.js');
+const review = require("./models/reviews.js");
+const { wrap } = require('module');
+const wrapAsync = require('./utlis/wrapAsync.js');
+const Listing = require("./models/listing.js");
+
+
+
+// Index Route
 app.get("/listings",wrapAsync(async(req,res)=>{
     const allListings=await Listing.find({});
     res.render("listings/index.ejs",{allListings});
@@ -106,34 +94,34 @@ app.post(
     validateListing,                                      // validating using middlewares
     wrapAsync(async(req,res,next)=>{                           //CUSTOM ERROR HANDLING USING WRAPASYNC MEHTOD
     // let {title,description,image,price,location,country}=req.body;
-/*    console.log(title);
-    console.log(price);
-    console.log(description);
-    console.log(country);*/
+//    console.log(title);
+//     console.log(price);
+//     console.log(description);
+//     console.log(country);
     // let listing=req.body.listing;
     // console.log(listing);
 
 
-        /*if(!req.body.listing){
-            throw new ExpressError(400,'bad request and send valid data for listing');
-        }
-        const newListing=new Listing(req.body.listing);
-        if(!newListing.description){
-            throw new ExpressError(400,'description is missing');
-        }
-        if(!newListing.location){
-            throw new ExpressError(400,'locatoin is missing');
-        }
-        if(!newListing.title){
-            throw new ExpressError(400,'title is missing');
-        }*/
+        // if(!req.body.listing){
+        //     throw new ExpressError(400,'bad request and send valid data for listing');
+        // }
+        // const newListing=new Listing(req.body.listing);
+        // if(!newListing.description){
+        //     throw new ExpressError(400,'description is missing');
+        // }
+        // if(!newListing.location){
+        //     throw new ExpressError(400,'locatoin is missing');
+        // }
+        // if(!newListing.title){
+        //     throw new ExpressError(400,'title is missing');
+        // }
 
         // below is schema validation using joi for npm normally
-        /*let result=listingSchema.validate(req.body);
+        // let result=listingSchema.validate(req.body);
         // console.log(result);
-        if(result.error){
-            throw new ExpressError(400,result.error);
-        }*/
+        // if(result.error){
+            // throw new ExpressError(400,result.error);
+        // }
         const newListing=new Listing(req.body.listing);
         await newListing.save();
         res.redirect("/listings");
@@ -171,7 +159,7 @@ app.delete("/listings/:id",wrapAsync(async(req,res)=>{
     await review.deleteMany({_id:{$in:deleted.reviews}});
 
     res.redirect("/listings");
-}));
+}));    
 
 // review 
 // posting review route
@@ -211,24 +199,32 @@ app.delete('/listings/:id/reviews/:reviewId',wrapAsync(async(req,res)=>{
     res.redirect(`/listings/${id}`);
 }));
 
+*/
 
+/*
+// validations for schema using middle wares
+const validateListing=(req,res,next)=>{
+    let {error}=listingSchema.validate(req.body);
+    if(error){
+        let errMsg=error.details.map((e1)=>e1.message).join(',');
+        throw new ExpressError(400,errMsg);
+    }
+    else{
+        next();
+    }
+}
 
+// validate reviews
+const validatereview=(req,res,next)=>{
+    let {error}=reviewSchema.validate(req.body);
+    console.log("in review validation");
+    if(error){
+        let errMsg=error.details.map((e1)=>e1.message).join(',');
+        throw new ExpressError(420,errMsg);
+    }
+    else{
+        next();
+    }
+}
 
-
-
-
-
-
-
-// custom error handling
-
-app.all('*',(req,res,next)=>{
-    next(new ExpressError(420,'page not found'));
-})
-
-app.use((err,req,res,next)=>{
-    let {statusCode=500,message='somethis went wrong'}=err;
-    res.status(statusCode).render('error.ejs',{err});
-    // res.status(statusCode).send(message);
-    // res.send('something went wrong!');
-})
+*/
