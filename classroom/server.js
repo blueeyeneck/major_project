@@ -4,6 +4,11 @@ const posts = require("./routes/posts.js");
 const users = require("./routes/users.js");
 // const cookieParser = require("cookie-parser");
 const session = require("express-session");
+const flash = require("connect-flash");
+const path = require("path");
+
+app.set("view engine","ejs");
+app.set("views",path.join(__dirname,"views"));
 
 // app.use(cookieParser("secreatcode"));
 
@@ -45,21 +50,44 @@ const sessionOptions = {
 };
 
 app.use(session(sessionOptions));
+app.use(flash());
+
+app.use((req,res,next)=>{
+    res.locals.succmsg = req.flash("success");
+    res.locals.errmsg = req.flash("not");
+    next();
+});
 
 app.get("/register",(req,res)=>{
     let {name="anonymous"} = req.query;
     console.log(req.session);
     req.session.name=name;
+    console.log(req.session);
     console.log(req.session.name);
     // res.send(name);
+    if(name==="anonymous"){
+        req.flash("not","user not registered");
+    }
+    else{
+        req.flash("success","user registered successfull");
+    }
     res.redirect("/hello");
 });
 
 app.get("/hello",(req,res)=>{
-    res.send(`hello ${req.session.name}`);
-});;
+    // res.send(`hello ${req.session.name}`);
+    // console.log(req.flash);
+    // const msg=req.flash("success");
+    // console.log(msg);
+    // res.locals.messages = req.flash("success");
+    // res.locals.succmsg = req.flash("success");
+    // res.locals.errmsg = req.flash("not");
+    // res.render("page.ejs",{ name: req.session.name, msg});
+    res.render("page.ejs",{ name: req.session.name});
+});
 
 // app.get("/reqcount",(req,res)=>{
+//     // console.log(req.session);
 //     if(req.session.count){
 //         ++req.session.count;
 //     }
