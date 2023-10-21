@@ -61,7 +61,7 @@ app.use((req,res,next)=>{
 // });
 
 const listingsRouter = require("./routes/listing.js");
-const reviewsRouter = require("./routes/reviews.js");
+const reviewsRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
 
