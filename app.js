@@ -9,6 +9,10 @@ const ejsMate = require('ejs-Mate');
 const ExpressError = require('./utlis/ExpressError.js');
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
+
 
 
 app.set("view engine","ejs");
@@ -32,15 +36,32 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     // console.log(res.locals.success);
     next();
-})
+});
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/reviews.js");
+// app.get("/demoUser",async(req,res)=>{
+//     let fakeUser = new User({
+//         email : "abc@gmail.com",
+//         username : "abc",
+//     });
+//     let newUser=await User.register(fakeUser,"password");
+//     res.send(newUser);
+// });
+
+const listingsRouter = require("./routes/listing.js");
+const reviewsRouter = require("./routes/reviews.js");
+const userRouter = require("./routes/user.js");
 
 
 app.listen(port,()=>{
@@ -64,8 +85,9 @@ main()
     });
 
 
-app.use("/listings",listings);
-app.use("/listings/:id/reviews",reviews);
+app.use("/listings",listingsRouter);
+app.use("/listings/:id/reviews",reviewsRouter);
+app.use("/",userRouter)
 
 
 // Custom Error Handling
