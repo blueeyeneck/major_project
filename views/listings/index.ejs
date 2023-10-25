@@ -8,7 +8,7 @@
         <% for(i of allListings){ %>
             <a href='/listings/<%=i.id%>' class="listing-link">
             <div class="card col card-listing" style="width: 20rem;">
-                <img src="<%= i.image%>" class="card-img-top" alt="listing_img" style="height: 20rem;">
+                <img src="<%= i.image.url%>" class="card-img-top" alt="listing_img" style="height: 20rem;">
                 <div class="card-img-overlay">mahi</div>
                 <div class="card-body">
                   <p class="card-text">

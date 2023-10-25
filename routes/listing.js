@@ -15,7 +15,8 @@ const upload = multer({ storage });
 // Index Route and Create Route
 router.route("/")
     .get(wrapAsync(listingController.index))
-    .post(isLoginIn,upload.single("listing[image]"),validateListing,wrapAsync(listingController.createList));
+    .post(isLoginIn,upload.single('listing[image]'),validateListing,wrapAsync(listingController.createList));
+    // .post(isLoginIn,validateListing,wrapAsync(listingController.createList));
 
 // New Route
 router.get("/new",isLoginIn,listingController.rederNewForm);

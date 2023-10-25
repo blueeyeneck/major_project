@@ -4,13 +4,13 @@
     <h3 class="new_heading">Create a New Listing</h3>
     <form method="post" action="/listings" class="new needs-validation" novalidate enctype="multipart/form-data">
         <div class="mb-3">
-            <label for="title">Title:-</label>
+            <label for="title" class="form-label">Title:-</label>
             <input name="listing[title]" placeholder="add a catchy title" type="text" class="form-control" required>
             <div class="valid-feedback">Title Look Good!</div>
             <div class="invalid-feedback">title should be valid</div>
         </div>
         <div class="mb-3">
-            <label for="description">description:-</label>
+            <label for="description" class="form-label">description:-</label>
             <textarea name="listing[description]" placeholder="enter title" class="form-control" required></textarea>
             <div class="invalid-feedback">please enter a short description</div>
             <div class="valid-feedback">Title Look Good!</div>
@@ -21,19 +21,19 @@
             <input name="listing[image]" placeholder="enter image url " type="text" class="form-control">
         </div> -->
         <div class="mb-3">
-            <label for="image">Upload Listing Image:-</label>
+            <label for="image" class="form-label">Upload Listing Image:-</label>
             <input name="listing[image]" type="file" class="form-control">
         </div>
 
         <div class="row">
             <div class="mb-3 col-md-4">
-                <label for="price">enter price per night:-</label>
+                <label for="price" class="form-label">enter price per night:-</label>
                 <input name="listing[price]" placeholder="1200" class="form-control" required>
                 <div class="invalid-feedback">price should be valid</div>
                 <div class="valid-feedback">Title Look Good!</div>
             </div>
             <div class="mb-3 col-md-8">
-                <label for="country">country:-</label>
+                <label for="country" class="form-label">country:-</label>
                 <input name="listing[country]" placeholder="India" type="text" class="form-control" required>
                 <div class="invalid-feedback">country name should be valid</div>
                 <div class="valid-feedback">Title Look Good!</div>
