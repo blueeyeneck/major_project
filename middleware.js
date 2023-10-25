@@ -29,11 +29,22 @@ module.exports.saveRedirectUrl=(req,res,next)=>{
 module.exports.isOwner=async(req,res,next)=>{
     let {id} = req.params;
     let listing =await Listing.findById(id);
-    if(!listing.owner.equals(res.locals.currUser._id)){
-        req.flash("error","you are not the owner of this listing");
-        return res.redirect(`/listings/${id}`);
-    }  
-    next();
+    // let r=res.locals.currUser._id;
+    // let o=listing.owner;
+    // console.log("res.locals:-",r);
+    // console.log("listing.owner:-",o);
+    try{
+        if(!listing.owner.equals(res.locals.currUser._id)){
+            req.flash("error","you are not the owner of this listing");
+            return res.redirect(`/listings/${id}`);
+        }  
+        next();
+    }
+    catch(err){
+        console.log("error occured");
+        console.log(res.locals.currUser);
+        console.log(listing.owner);
+    }    
 };
 
 // Validations for schemes using middle wares
