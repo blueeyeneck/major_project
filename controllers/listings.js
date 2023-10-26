@@ -23,6 +23,15 @@ module.exports.showListing = async(req,res)=>{
             }
         })
         .populate('owner');
+    if(listing.geometry.coordinates.length==0){
+        let response = await geocodingClient
+            .forwardGeocode({
+                query : listing.location+","+listing.country,
+                limit : 1
+            })
+            .send()
+        listing.geometry = response.body.features[0].geometry;
+    }
 
     if(!listing){
         req.flash("error","listing your requested for does not exist!");
@@ -36,7 +45,7 @@ module.exports.createList = async(req,res)=>{
     
     let response = await geocodingClient
         .forwardGeocode({
-        query: req.body.listing.location,
+        query: req.body.listing.location+","+req.body.listing.country,
         limit: 1
         })
         .send();
