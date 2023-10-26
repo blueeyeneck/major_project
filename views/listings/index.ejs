@@ -1,10 +1,54 @@
 <% layout('/layouts/boilerplate.ejs') -%>
 <body>
-    <h1>All Listings</h1>
+    <!-- <h1>All Listings</h1> -->
     <!-- <form method="get" action="/listings/new">
         <button>Create New Listing</button>
     </form> -->
-    <div class="row row-cols-lg-3 row-cols-mb-2 row-col-sm-1">
+    <style>
+      #filters {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .filter {
+        text-align: center;
+        margin-right: 2rem;
+        margin-top: 2rem;
+        opacity: 0.7;
+      }
+      .filter:hover{
+        opacity: 1;
+        cursor: pointer;
+      }
+    </style>
+
+
+    <div id="filters">
+      <div class="filter">
+        <div><i class="fa-solid fa-fire"></i></div>
+        <p>Treanding</p>
+      </div>
+      <div class="filter">
+        <div><i class="fa-solid fa-bed"></i></div>
+        <p>Treanding</p>
+      </div>
+      <div class="filter">
+        <div><i class="fa-solid fa-mountain-city"></i></div>
+        <p>Iconic city</p>
+      </div>
+      <div class="filter">
+        <div><i class="fa-solid fa-house"></i></div>
+        <p>montain</p>
+      </div>
+      <div class="filter">
+        <div><i class="fa-solid fa-mountain"></i></i></div>
+        <p>castle</p>
+      </div>
+      <div class="filter">
+        <div><i class="fa-solid fa-chess-rook"></i></div>
+        <p>Amazing places</p>
+      </div>
+    </div>
+    <div class="row row-cols-lg-3 row-cols-mb-2 row-col-sm-1 mt-3">
         <% for(i of allListings){ %>
             <a href='/listings/<%=i.id%>' class="listing-link">
             <div class="card col card-listing" style="width: 20rem;">

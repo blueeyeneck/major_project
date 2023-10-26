@@ -75,9 +75,7 @@ app.listen(port,()=>{
     console.log(`sever is listening to port no:-${port}`);
 });
 
-app.get('/',(req,res)=>{
-    res.render("listings/home.ejs");
-});
+// app.get('/',(req,res)=>{res.render("listings/home.ejs");});
 
 async function main(){
     await mongoose.connect(mongo_url);
