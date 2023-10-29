@@ -10,12 +10,16 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const port = 8080;
-const mongo_url = "mongodb://127.0.0.1:27017/wanderlust";
+
+// const mongo_url = "mongodb://127.0.0.1:27017/wanderlust";
+const dburl = process.env.ATLAS_DB_URL;
+
 const path = require("path");
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-Mate');
 const ExpressError = require('./utlis/ExpressError.js');
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -28,7 +32,20 @@ app.use(methodOverride("_method"));
 app.engine('ejs',ejsMate);
 app.use(express.static(path.join(__dirname,"/public")));
 
+const store = MongoStore.create({
+    mongoUrl : dburl,
+    crypto : {
+        secret : "mysupersecreatcode",
+    },
+    touchAfter : 24*3600,
+});
+
+store.on("error",()=>{
+    console.log("error in mongo session store",err);
+});
+
 const sessionOptions = {
+    store,
     secret : "mysupersecreatcode",
     resave : false,
     saveUninitialized : true,
@@ -38,6 +55,7 @@ const sessionOptions = {
         httpOnly : true,
     },
 };
+
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -78,7 +96,7 @@ app.listen(port,()=>{
 // app.get('/',(req,res)=>{res.render("listings/home.ejs");});
 
 async function main(){
-    await mongoose.connect(mongo_url);
+    await mongoose.connect(dburl);
 }
 
 main()
